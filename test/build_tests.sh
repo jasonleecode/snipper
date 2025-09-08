@@ -164,6 +164,30 @@ g++ $CXX_FLAGS $INCLUDE_FLAGS \
     $LINK_FLAGS \
     -o "$TEST_DIR/bin/test_junction_light"
 
+# 编译调度功能测试
+echo "  编译 test_scheduler..."
+g++ $CXX_FLAGS $INCLUDE_FLAGS \
+    "$TEST_DIR/test_scheduler.cpp" \
+    "$PROJECT_ROOT/runtime/runtime.cpp" \
+    "$PROJECT_ROOT/runtime/core/context.cpp" \
+    "$PROJECT_ROOT/runtime/core/rule.cpp" \
+    "$PROJECT_ROOT/runtime/core/engine.cpp" \
+    "$PROJECT_ROOT/runtime/condition/condition_evaluator.cpp" \
+    "$PROJECT_ROOT/runtime/condition/operators.cpp" \
+    "$PROJECT_ROOT/runtime/expression/expression.cpp" \
+    "$PROJECT_ROOT/runtime/priority/priority_manager.cpp" \
+    "$PROJECT_ROOT/runtime/behavior_tree/bt_node.cpp" \
+    "$PROJECT_ROOT/runtime/behavior_tree/bt_parser.cpp" \
+    "$PROJECT_ROOT/runtime/behavior_tree/bt_executor.cpp" \
+    "$PROJECT_ROOT/runtime/behavior_tree/bt_manager.cpp" \
+    "$PROJECT_ROOT/runtime/scheduler/cron_parser.cpp" \
+    "$PROJECT_ROOT/runtime/scheduler/timer.cpp" \
+    "$PROJECT_ROOT/runtime/scheduler/frequency_limiter.cpp" \
+    "$PROJECT_ROOT/runtime/scheduler/resource_monitor.cpp" \
+    "$PROJECT_ROOT/runtime/scheduler/scheduler.cpp" \
+    $LINK_FLAGS \
+    -o "$TEST_DIR/bin/test_scheduler"
+
 echo ""
 echo "构建完成！"
 echo ""
@@ -175,6 +199,7 @@ echo "  ./test/bin/test_behavior_tree"
 echo "  ./test/bin/test_clean_robot"
 echo "  ./test/bin/test_multi_condition"
 echo "  ./test/bin/test_junction_light"
+echo "  ./test/bin/test_scheduler"
 echo ""
 echo "清理测试文件:"
 echo "  rm -rf test/bin"

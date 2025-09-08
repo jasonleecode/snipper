@@ -9,6 +9,8 @@
 #include "expression/expression.h"
 #include "priority/priority_manager.h"
 #include "behavior_tree/behavior_tree.h"
+#include "scheduler/scheduler.h"
+#include "persistence/persistence.h"
 
 // 全局函数声明
 void UpdateTask();

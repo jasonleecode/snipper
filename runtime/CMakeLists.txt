@@ -41,6 +41,18 @@ set(RUNTIME_SOURCES
     behavior_tree/bt_parser.cpp
     behavior_tree/bt_executor.cpp
     behavior_tree/bt_manager.cpp
+    scheduler/cron_parser.cpp
+    scheduler/timer.cpp
+    scheduler/frequency_limiter.cpp
+    scheduler/resource_monitor.cpp
+    scheduler/scheduler.cpp
+    persistence/storage_factory.cpp
+    persistence/memory_storage.cpp
+    persistence/file_storage.cpp
+    persistence/history_recorder.cpp
+    persistence/rule_state_manager.cpp
+    persistence/config_hot_reload.cpp
+    persistence/persistence.cpp
 )
 
 # 创建静态库

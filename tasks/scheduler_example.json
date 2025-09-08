@@ -1,0 +1,155 @@
+{
+  "description": "高级调度功能示例配置",
+  "version": "1.0.0",
+  "scheduler": {
+    "enabled": true,
+    "tasks": [
+      {
+        "id": "daily_cleanup",
+        "type": "RULE_EXECUTION",
+        "targetId": "cleanup_rule",
+        "cronExpression": "0 2 * * *",
+        "enabled": true,
+        "frequencyLimit": {
+          "maxRequests": 1,
+          "windowMs": 86400000,
+          "strategy": "FIXED_WINDOW"
+        },
+        "resourceLimit": {
+          "maxMemoryUsage": 10485760,
+          "maxCpuTimeMs": 30000,
+          "maxExecutionCount": 1,
+          "maxErrorRate": 0.0,
+          "maxExecutionTimeMs": 30000
+        }
+      },
+      {
+        "id": "hourly_monitor",
+        "type": "BEHAVIOR_TREE",
+        "targetId": "monitor_bt",
+        "cronExpression": "0 * * * *",
+        "enabled": true,
+        "frequencyLimit": {
+          "maxRequests": 24,
+          "windowMs": 86400000,
+          "strategy": "SLIDING_WINDOW"
+        },
+        "resourceLimit": {
+          "maxMemoryUsage": 5242880,
+          "maxCpuTimeMs": 10000,
+          "maxExecutionCount": 24,
+          "maxErrorRate": 0.1,
+          "maxExecutionTimeMs": 10000
+        }
+      },
+      {
+        "id": "realtime_alert",
+        "type": "CUSTOM_ACTION",
+        "targetId": "alert_action",
+        "interval": 5000,
+        "repeatCount": -1,
+        "enabled": true,
+        "frequencyLimit": {
+          "maxRequests": 100,
+          "windowMs": 60000,
+          "strategy": "TOKEN_BUCKET"
+        },
+        "resourceLimit": {
+          "maxMemoryUsage": 1048576,
+          "maxCpuTimeMs": 1000,
+          "maxExecutionCount": 1000,
+          "maxErrorRate": 0.05,
+          "maxExecutionTimeMs": 1000
+        }
+      }
+    ]
+  },
+  "rules": {
+    "cleanup_rule": {
+      "name": "每日清理任务",
+      "description": "每天凌晨2点执行系统清理",
+      "condition": {
+        "type": "all",
+        "conditions": [
+          {
+            "type": "simple",
+            "key": "time_hour",
+            "operator": "==",
+            "value": 2
+          },
+          {
+            "type": "simple",
+            "key": "system_cleanup_needed",
+            "operator": "==",
+            "value": true
+          }
+        ]
+      },
+      "action": {
+        "type": "cleanup_system",
+        "params": {
+          "cleanup_temp_files": true,
+          "cleanup_logs": true,
+          "cleanup_cache": true
+        }
+      }
+    }
+  },
+  "behaviorTrees": {
+    "monitor_bt": {
+      "root": {
+        "type": "sequence",
+        "name": "系统监控",
+        "children": [
+          {
+            "type": "condition",
+            "name": "检查系统状态",
+            "condition": "check_system_health",
+            "params": {
+              "cpu_threshold": 80.0,
+              "memory_threshold": 90.0,
+              "disk_threshold": 85.0
+            }
+          },
+          {
+            "type": "action",
+            "name": "记录监控数据",
+            "action": "log_monitoring_data",
+            "params": {
+              "log_level": "info",
+              "include_metrics": true
+            }
+          }
+        ]
+      }
+    }
+  },
+  "actions": {
+    "cleanup_system": {
+      "description": "执行系统清理",
+      "function": "cleanup_system_action"
+    },
+    "log_monitoring_data": {
+      "description": "记录监控数据",
+      "function": "log_monitoring_data_action"
+    },
+    "alert_action": {
+      "description": "发送实时告警",
+      "function": "send_alert_action"
+    }
+  },
+  "conditions": {
+    "check_system_health": {
+      "description": "检查系统健康状态",
+      "function": "check_system_health_condition"
+    }
+  },
+  "context": {
+    "time_hour": 2,
+    "system_cleanup_needed": true,
+    "cpu_usage": 45.2,
+    "memory_usage": 67.8,
+    "disk_usage": 72.1,
+    "alert_level": "normal"
+  }
+}
