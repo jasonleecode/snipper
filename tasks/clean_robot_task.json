@@ -1,0 +1,310 @@
+{
+    "root": {
+        "type": "sequence",
+        "name": "Clean Robot Main Task",
+        "description": "清洁机器人主任务序列",
+        "children": [
+            {
+                "type": "condition",
+                "name": "Check Battery Level",
+                "description": "检查电池电量是否充足",
+                "condition": "check_number",
+                "params": {
+                    "key": "battery_level",
+                    "threshold": 5.0,
+                    "operator": ">"
+                }
+            },
+            {
+                "type": "sequence",
+                "name": "Initial Positioning",
+                "description": "开机后定位序列",
+                "children": [
+                    {
+                        "type": "condition",
+                        "name": "Check Positioning Status",
+                        "description": "检查是否已完成定位",
+                        "condition": "check_value",
+                        "params": {
+                            "key": "positioning_completed",
+                            "expected": "false"
+                        }
+                    },
+                    {
+                        "type": "action",
+                        "name": "Move Forward 1 Meter",
+                        "description": "向前走1米",
+                        "action": "move_forward",
+                        "params": {
+                            "distance": 1.0,
+                            "speed": 0.3
+                        }
+                    },
+                    {
+                        "type": "action",
+                        "name": "Rotate 360 Degrees",
+                        "description": "旋转一圈进行定位",
+                        "action": "rotate_360",
+                        "params": {
+                            "speed": 0.2,
+                            "direction": "clockwise"
+                        }
+                    },
+                    {
+                        "type": "action",
+                        "name": "Update Positioning Status",
+                        "description": "更新定位状态",
+                        "action": "set_value",
+                        "params": {
+                            "key": "positioning_completed",
+                            "value": "true"
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "selector",
+                "name": "Task Selector",
+                "description": "根据当前状态选择任务",
+                "children": [
+                    {
+                        "type": "sequence",
+                        "name": "Cleaning Task",
+                        "description": "执行清扫任务",
+                        "children": [
+                            {
+                                "type": "condition",
+                                "name": "Check Cleaning Status",
+                                "description": "检查清扫状态",
+                                "condition": "check_value",
+                                "params": {
+                                    "key": "cleaning_status",
+                                    "expected": "in_progress"
+                                }
+                            },
+                            {
+                                "type": "selector",
+                                "name": "Cleaning Action Selector",
+                                "description": "选择清扫动作",
+                                "children": [
+                                    {
+                                        "type": "sequence",
+                                        "name": "Wall Collision Response",
+                                        "description": "墙壁碰撞响应",
+                                        "children": [
+                                            {
+                                                "type": "condition",
+                                                "name": "Check Wall Collision",
+                                                "description": "检查是否碰到墙壁",
+                                                "condition": "check_value",
+                                                "params": {
+                                                    "key": "wall_collision",
+                                                    "expected": "true"
+                                                }
+                                            },
+                                            {
+                                                "type": "action",
+                                                "name": "Turn Around",
+                                                "description": "执行调头动作",
+                                                "action": "turn_around",
+                                                "params": {
+                                                    "direction": "random",
+                                                    "angle": 180
+                                                }
+                                            },
+                                            {
+                                                "type": "action",
+                                                "name": "Reset Collision Flag",
+                                                "description": "重置碰撞标志",
+                                                "action": "set_value",
+                                                "params": {
+                                                    "key": "wall_collision",
+                                                    "value": "false"
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "type": "sequence",
+                                        "name": "Normal Cleaning",
+                                        "description": "正常清扫",
+                                        "children": [
+                                            {
+                                                "type": "condition",
+                                                "name": "Check No Wall Collision",
+                                                "description": "检查没有墙壁碰撞",
+                                                "condition": "check_value",
+                                                "params": {
+                                                    "key": "wall_collision",
+                                                    "expected": "false"
+                                                }
+                                            },
+                                            {
+                                                "type": "action",
+                                                "name": "Move Forward",
+                                                "description": "向前移动",
+                                                "action": "move_forward",
+                                                "params": {
+                                                    "speed": 0.5,
+                                                    "distance": 1.0
+                                                }
+                                            },
+                                            {
+                                                "type": "action",
+                                                "name": "Clean Area",
+                                                "description": "清扫当前区域",
+                                                "action": "clean_area",
+                                                "params": {
+                                                    "intensity": "medium",
+                                                    "duration": 2000
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "sequence",
+                        "name": "Return to Charge",
+                        "description": "返回充电",
+                        "children": [
+                            {
+                                "type": "condition",
+                                "name": "Check Need Charging",
+                                "description": "检查是否需要充电",
+                                "condition": "check_value",
+                                "params": {
+                                    "key": "need_charging",
+                                    "expected": "true"
+                                }
+                            },
+                            {
+                                "type": "action",
+                                "name": "Stop Cleaning",
+                                "description": "停止清扫",
+                                                "action": "stop_cleaning",
+                                                "params": {}
+                            },
+                            {
+                                "type": "action",
+                                "name": "Navigate to Charging Station",
+                                "description": "导航到充电站",
+                                                "action": "navigate_to",
+                                                "params": {
+                                                    "target": "charging_station",
+                                                    "speed": 0.8
+                                                }
+                            },
+                            {
+                                "type": "action",
+                                "name": "Start Charging",
+                                "description": "开始充电",
+                                                "action": "start_charging",
+                                                "params": {
+                                                    "charging_speed": "fast"
+                                                }
+                            },
+                            {
+                                "type": "action",
+                                "name": "Wait for Full Charge",
+                                "description": "等待充满电",
+                                                "action": "wait_condition",
+                                                "params": {
+                                                    "condition": "battery_full",
+                                                    "timeout": 300000
+                                                }
+                            },
+                            {
+                                "type": "action",
+                                "name": "Reset Charging Status",
+                                "description": "重置充电状态",
+                                                "action": "set_value",
+                                                "params": {
+                                                    "key": "need_charging",
+                                                    "value": "false"
+                                                }
+                            },
+                            {
+                                "type": "action",
+                                "name": "Resume Cleaning",
+                                "description": "恢复清扫",
+                                                "action": "set_value",
+                                                "params": {
+                                                    "key": "cleaning_status",
+                                                    "value": "in_progress"
+                                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "context": {
+        "battery_level": 85.0,
+        "cleaning_status": "in_progress",
+        "wall_collision": "false",
+        "need_charging": "false",
+        "positioning_completed": "false",
+        "current_position": {
+            "x": 0.0,
+            "y": 0.0,
+            "theta": 0.0
+        },
+        "charging_station_position": {
+            "x": 10.0,
+            "y": 10.0,
+            "theta": 0.0
+        }
+    },
+    "actions": {
+        "turn_around": {
+            "description": "执行调头动作",
+            "function": "turn_around_action"
+        },
+        "move_forward": {
+            "description": "向前移动",
+            "function": "move_forward_action"
+        },
+        "rotate_360": {
+            "description": "旋转360度进行定位",
+            "function": "rotate_360_action"
+        },
+        "clean_area": {
+            "description": "清扫区域",
+            "function": "clean_area_action"
+        },
+        "stop_cleaning": {
+            "description": "停止清扫",
+            "function": "stop_cleaning_action"
+        },
+        "navigate_to": {
+            "description": "导航到指定位置",
+            "function": "navigate_to_action"
+        },
+        "start_charging": {
+            "description": "开始充电",
+            "function": "start_charging_action"
+        },
+        "wait_condition": {
+            "description": "等待条件满足",
+            "function": "wait_condition_action"
+        },
+        "set_value": {
+            "description": "设置上下文值",
+            "function": "set_value_action"
+        }
+    },
+    "conditions": {
+        "check_number": {
+            "description": "检查数值条件",
+            "function": "check_number_condition"
+        },
+        "check_value": {
+            "description": "检查值条件",
+            "function": "check_value_condition"
+        }
+    }
+}

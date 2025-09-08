@@ -1,0 +1,84 @@
+{
+    "rules": [
+        {
+            "id": "emergency_stop",
+            "when": {
+                "left": "emergency_button",
+                "op": "==",
+                "right": "pressed"
+            },
+            "do": [
+                {"action": "emergency_stop", "params": {"reason": "Emergency button pressed"}},
+                {"action": "notify", "params": {"text": "EMERGENCY STOP ACTIVATED!"}}
+            ],
+            "mode": "once",
+            "priority": 1,
+            "group": "safety"
+        },
+        {
+            "id": "high_temp_alarm",
+            "when": {
+                "all": [
+                    {"left": "temp", "op": ">", "right": 80},
+                    {"left": "door", "op": "==", "right": "open"}
+                ]
+            },
+            "do": [
+                {"action": "alarm", "params": {"level": "high"}},
+                {"action": "notify", "params": {"text": "CRITICAL: High temperature with door open!"}}
+            ],
+            "mode": "repeat",
+            "throttle_ms": 5000,
+            "priority": 10,
+            "group": "temperature"
+        },
+        {
+            "id": "normal_fan_control",
+            "when": {
+                "all": [
+                    {"left": "temp", "op": ">", "right": 40},
+                    {"left": "door", "op": "==", "right": "open"}
+                ]
+            },
+            "do": [
+                {"action": "fan_on", "params": {"level": 3}},
+                {"action": "notify", "params": {"text": "Fan activated due to high temperature"}}
+            ],
+            "mode": "repeat",
+            "throttle_ms": 1000,
+            "priority": 100,
+            "group": "temperature"
+        },
+        {
+            "id": "low_temp_heater",
+            "when": {
+                "left": "temp",
+                "op": "<",
+                "right": 15
+            },
+            "do": [
+                {"action": "heater_on", "params": {"level": 2}},
+                {"action": "notify", "params": {"text": "Heater activated due to low temperature"}}
+            ],
+            "mode": "repeat",
+            "throttle_ms": 2000,
+            "priority": 200,
+            "group": "temperature"
+        },
+        {
+            "id": "door_reminder",
+            "when": {
+                "left": "door",
+                "op": "==",
+                "right": "open"
+            },
+            "do": [
+                {"action": "notify", "params": {"text": "Door is open - please close it"}}
+            ],
+            "mode": "repeat",
+            "throttle_ms": 30000,
+            "priority": 500,
+            "group": "reminders"
+        }
+    ]
+}

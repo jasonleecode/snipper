@@ -1,0 +1,20 @@
+{
+    "rules": [
+      {
+        "id": "r1",
+        "when": {
+          "all": [
+            {"left": "temp", "op": ">", "right": 40},
+            {"left": "door", "op": "==", "right": "open"}
+          ]
+        },
+        "do": [
+          {"action": "fan_on", "params": {"level": 3}},
+          {"action": "notify", "params": {"text": "High temp with door open"}}
+        ],
+        "mode": "repeat",
+        "throttle_ms": 1000
+      }
+    ]
+  }
+  

@@ -1,0 +1,115 @@
+{
+    "root": {
+        "type": "sequence",
+        "name": "Main Sequence",
+        "description": "Main behavior tree sequence",
+        "children": [
+            {
+                "type": "condition",
+                "name": "Check Battery",
+                "description": "Check if battery level is sufficient",
+                "condition": "check_number",
+                "params": {
+                    "key": "battery_level",
+                    "threshold": 20.0,
+                    "operator": ">"
+                }
+            },
+            {
+                "type": "selector",
+                "name": "Task Selector",
+                "description": "Choose between different tasks",
+                "children": [
+                    {
+                        "type": "sequence",
+                        "name": "Clean Task",
+                        "description": "Perform cleaning task",
+                        "children": [
+                            {
+                                "type": "condition",
+                                "name": "Check Room Dirty",
+                                "condition": "check_value",
+                                "params": {
+                                    "key": "room_status",
+                                    "expected": "dirty"
+                                }
+                            },
+                            {
+                                "type": "action",
+                                "name": "Start Cleaning",
+                                "action": "print",
+                                "params": {
+                                    "message": "Starting cleaning task..."
+                                }
+                            },
+                            {
+                                "type": "action",
+                                "name": "Wait Cleaning",
+                                "action": "wait",
+                                "params": {
+                                    "duration": 2000
+                                }
+                            },
+                            {
+                                "type": "action",
+                                "name": "Finish Cleaning",
+                                "action": "print",
+                                "params": {
+                                    "message": "Cleaning completed!"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "sequence",
+                        "name": "Patrol Task",
+                        "description": "Perform patrol task",
+                        "children": [
+                            {
+                                "type": "condition",
+                                "name": "Check Room Clean",
+                                "condition": "check_value",
+                                "params": {
+                                    "key": "room_status",
+                                    "expected": "clean"
+                                }
+                            },
+                            {
+                                "type": "action",
+                                "name": "Start Patrol",
+                                "action": "print",
+                                "params": {
+                                    "message": "Starting patrol task..."
+                                }
+                            },
+                            {
+                                "type": "action",
+                                "name": "Wait Patrol",
+                                "action": "wait",
+                                "params": {
+                                    "duration": 1500
+                                }
+                            },
+                            {
+                                "type": "action",
+                                "name": "Finish Patrol",
+                                "action": "print",
+                                "params": {
+                                    "message": "Patrol completed!"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "type": "action",
+                "name": "Return to Base",
+                "action": "print",
+                "params": {
+                    "message": "Returning to base station..."
+                }
+            }
+        ]
+    }
+}

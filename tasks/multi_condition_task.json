@@ -1,0 +1,87 @@
+{
+    "root": {
+        "type": "sequence",
+        "name": "Multi Condition Data Upload Task",
+        "description": "多条件数据回传任务",
+        "children": [
+            {
+                "type": "condition",
+                "name": "Check City Location",
+                "description": "检查城市位置是否为杭州",
+                "condition": "check_value",
+                "params": {
+                    "key": "city_location",
+                    "expected": "hangzhou"
+                }
+            },
+            {
+                "type": "condition",
+                "name": "Check Vehicle Speed",
+                "description": "检查车速是否达到80km/h",
+                "condition": "check_number",
+                "params": {
+                    "key": "vehicle_speed",
+                    "threshold": 80.0,
+                    "operator": ">="
+                }
+            },
+            {
+                "type": "condition",
+                "name": "Check Weather Condition",
+                "description": "检查天气是否为雷雨天",
+                "condition": "check_value",
+                "params": {
+                    "key": "weather_condition",
+                    "expected": "thunderstorm"
+                }
+            },
+            {
+                "type": "condition",
+                "name": "Check Road Scenario",
+                "description": "检查路况是否为下高速匝道场景",
+                "condition": "check_value",
+                "params": {
+                    "key": "road_scenario",
+                    "expected": "highway_exit_ramp"
+                }
+            },
+            {
+                "type": "action",
+                "name": "Data Upload",
+                "description": "执行数据回传，回传长度30秒",
+                "action": "data_upload",
+                "params": {
+                    "duration": 30,
+                    "data_type": "vehicle_telemetry",
+                    "priority": "high",
+                    "compression": "enabled"
+                }
+            }
+        ]
+    },
+    "context": {
+        "city_location": "hangzhou",
+        "vehicle_speed": 85.0,
+        "weather_condition": "thunderstorm",
+        "road_scenario": "highway_exit_ramp",
+        "upload_status": "idle",
+        "data_buffer_size": 0,
+        "network_quality": "good"
+    },
+    "actions": {
+        "data_upload": {
+            "description": "数据回传动作",
+            "function": "data_upload_action"
+        }
+    },
+    "conditions": {
+        "check_value": {
+            "description": "检查值条件",
+            "function": "check_value_condition"
+        },
+        "check_number": {
+            "description": "检查数值条件",
+            "function": "check_number_condition"
+        }
+    }
+}

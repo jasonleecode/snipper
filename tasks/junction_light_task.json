@@ -1,0 +1,148 @@
+{
+    "root": {
+        "type": "repeater",
+        "name": "Traffic Light Cycle",
+        "description": "红绿灯循环控制",
+        "params": {
+            "count": -1
+        },
+        "child": {
+            "type": "sequence",
+            "name": "Complete Light Cycle",
+            "description": "完整的红绿灯周期",
+            "children": [
+                {
+                    "type": "sequence",
+                    "name": "Green Light Phase",
+                    "description": "绿灯阶段",
+                    "children": [
+                        {
+                            "type": "action",
+                            "name": "Turn On Green Light",
+                            "description": "开启绿灯",
+                            "action": "turn_on_light",
+                            "params": {
+                                "light_color": "green",
+                                "brightness": 100
+                            }
+                        },
+                        {
+                            "type": "action",
+                            "name": "Wait Green Duration",
+                            "description": "绿灯持续30秒",
+                            "action": "wait_duration",
+                            "params": {
+                                "duration": 30,
+                                "unit": "seconds"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "sequence",
+                    "name": "Yellow Light Phase 1",
+                    "description": "第一次黄灯阶段",
+                    "children": [
+                        {
+                            "type": "action",
+                            "name": "Turn On Yellow Light",
+                            "description": "开启黄灯",
+                            "action": "turn_on_light",
+                            "params": {
+                                "light_color": "yellow",
+                                "brightness": 100
+                            }
+                        },
+                        {
+                            "type": "action",
+                            "name": "Wait Yellow Duration 1",
+                            "description": "黄灯持续4秒",
+                            "action": "wait_duration",
+                            "params": {
+                                "duration": 4,
+                                "unit": "seconds"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "sequence",
+                    "name": "Red Light Phase",
+                    "description": "红灯阶段",
+                    "children": [
+                        {
+                            "type": "action",
+                            "name": "Turn On Red Light",
+                            "description": "开启红灯",
+                            "action": "turn_on_light",
+                            "params": {
+                                "light_color": "red",
+                                "brightness": 100
+                            }
+                        },
+                        {
+                            "type": "action",
+                            "name": "Wait Red Duration",
+                            "description": "红灯持续20秒",
+                            "action": "wait_duration",
+                            "params": {
+                                "duration": 20,
+                                "unit": "seconds"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "type": "sequence",
+                    "name": "Yellow Light Phase 2",
+                    "description": "第二次黄灯阶段",
+                    "children": [
+                        {
+                            "type": "action",
+                            "name": "Turn On Yellow Light Again",
+                            "description": "再次开启黄灯",
+                            "action": "turn_on_light",
+                            "params": {
+                                "light_color": "yellow",
+                                "brightness": 100
+                            }
+                        },
+                        {
+                            "type": "action",
+                            "name": "Wait Yellow Duration 2",
+                            "description": "黄灯持续4秒",
+                            "action": "wait_duration",
+                            "params": {
+                                "duration": 4,
+                                "unit": "seconds"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "context": {
+        "current_light": "off",
+        "cycle_count": 0,
+        "is_emergency": false,
+        "pedestrian_crossing": false,
+        "traffic_density": "normal"
+    },
+    "actions": {
+        "turn_on_light": {
+            "description": "开启指定颜色的灯",
+            "function": "turn_on_light_action"
+        },
+        "wait_duration": {
+            "description": "等待指定时长",
+            "function": "wait_duration_action"
+        }
+    },
+    "conditions": {
+        "check_light_status": {
+            "description": "检查灯光状态",
+            "function": "check_light_status_condition"
+        }
+    }
+}

@@ -1,0 +1,19 @@
+@PACKAGE_INIT@
+
+# 包含nlohmann/json
+find_package(nlohmann_json REQUIRED)
+
+# 检查必需的组件
+include(CMakeFindDependencyMacro)
+
+# 设置包含目录
+set_and_check(${CMAKE_FIND_PACKAGE_NAME}_INCLUDE_DIR "@PACKAGE_INCLUDE_DIR@")
+
+# 设置库文件
+set_and_check(${CMAKE_FIND_PACKAGE_NAME}_LIBRARY "@PACKAGE_LIBRARY@")
+
+# 检查库文件是否存在
+check_required_components(${CMAKE_FIND_PACKAGE_NAME})
+
+# 包含目标文件
+include("${CMAKE_CURRENT_LIST_DIR}/@TARGETS_EXPORT_NAME@.cmake")
